@@ -9,31 +9,47 @@ interface Props {
   ctx: AppRuntimeCtx;
 }
 
+interface StorageBinding {
+  sourceId: string;
+  sourceType: string;
+  sourceName: string;
+  displayHints?: { protocolPrefix?: string };
+  path: string;
+}
+
 const ANALYSIS_TYPES: AnalysisType[] = ["ocr", "face", "clip", "gps", "all"];
 
 export function AnalyzePanel({ t, ctx }: Props) {
+  const [sourceId, setSourceId] = useState("");
+  const [sourceName, setSourceName] = useState("");
   const [path, setPath] = useState("");
   const [analysisType, setAnalysisType] = useState<AnalysisType>("all");
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handlePickFile = async () => {
-    const picked = await ctx.shell.pickFilePath({
+  const fullPath = sourceId && path ? `vfs://${sourceId}${path}` : path;
+
+  const handlePickStorage = async () => {
+    const binding: StorageBinding | null = await ctx.shell.pickStorageBinding({
       title: t("pickImage"),
+      initial: sourceId ? { sourceId, path } : undefined,
     });
-    if (picked) {
-      setPath(picked);
+    if (binding) {
+      setSourceId(binding.sourceId);
+      setSourceName(binding.sourceName);
+      setPath(binding.path);
     }
   };
 
   const handleAnalyze = async () => {
-    if (!path.trim()) return;
+    const target = fullPath.trim();
+    if (!target) return;
     setLoading(true);
     setError(null);
     setResult(null);
     try {
-      const resp = await api.analyze({ path: path.trim(), analysisType });
+      const resp = await api.analyze({ path: target, analysisType });
       setResult(resp);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -45,26 +61,39 @@ export function AnalyzePanel({ t, ctx }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-2">
-        <input
-          type="text"
-          value={path}
-          onChange={(e) => setPath(e.target.value)}
-          placeholder={t("pathPlaceholder")}
-          className="flex-1 rounded border border-black/10 dark:border-white/10 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
-          onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
-        />
+        <div className="flex flex-1 items-center gap-2 rounded border border-black/10 dark:border-white/10 bg-transparent px-3 py-2 text-sm">
+          {sourceId ? (
+            <span className="shrink-0 rounded bg-[var(--color-accent-subtle)] px-2 py-0.5 text-xs text-[var(--color-accent)]">
+              {sourceName || sourceId}
+            </span>
+          ) : null}
+          <input
+            type="text"
+            value={path}
+            onChange={(e) => {
+              setPath(e.target.value);
+              if (sourceId) {
+                setSourceId("");
+                setSourceName("");
+              }
+            }}
+            placeholder={sourceId ? t("pathPlaceholder") : t("pathOrPickPlaceholder")}
+            className="flex-1 bg-transparent outline-none min-w-0"
+            onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
+          />
+        </div>
         <button
           type="button"
-          onClick={handlePickFile}
+          onClick={handlePickStorage}
           className="cursor-pointer rounded border border-black/10 dark:border-white/10 px-3 py-2 text-sm hover:bg-black/[0.05] dark:hover:bg-white/[0.05]"
-          title={t("pickFile")}
+          title={t("pickStorage")}
         >
           <FolderOpen size={16} />
         </button>
         <button
           type="button"
           onClick={handleAnalyze}
-          disabled={loading || !path.trim()}
+          disabled={loading || !fullPath.trim()}
           className="cursor-pointer rounded bg-[var(--color-accent)] px-4 py-2 text-sm text-white disabled:opacity-50"
         >
           {loading ? t("analyzing") : t("analyze")}

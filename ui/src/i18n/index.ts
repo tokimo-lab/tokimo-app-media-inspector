@@ -32,6 +32,8 @@ export const zhCN: Record<string, string> = {
   district: "区",
   pickFile: "选择文件",
   pickImage: "选择图片",
+  pickStorage: "选择存储源",
+  pathOrPickPlaceholder: "输入路径或点击右侧按钮选择存储源",
 };
 
 export const enUS: Record<string, string> = {
@@ -68,4 +70,6 @@ export const enUS: Record<string, string> = {
   district: "District",
   pickFile: "Pick File",
   pickImage: "Pick Image",
+  pickStorage: "Pick Storage Source",
+  pathOrPickPlaceholder: "Enter path or click button to pick storage source",
 };
