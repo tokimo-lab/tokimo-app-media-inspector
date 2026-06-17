@@ -1,9 +1,8 @@
 import type { AppRuntimeCtx } from "@tokimo/sdk";
-import { FolderOpen, X } from "lucide-react";
-import { useCallback, useState } from "react";
+import { FolderOpen } from "lucide-react";
+import { useState } from "react";
 import { api, type AnalyzeResponse, type AnalysisType } from "../api/client";
 import { ResultViewer } from "./ResultViewer";
-import { VfsFilePicker } from "./VfsFilePicker";
 
 interface Props {
   t: (key: string) => string;
@@ -20,19 +19,17 @@ export function AnalyzePanel({ t, ctx }: Props) {
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPicker, setShowPicker] = useState(false);
 
   const fullPath = sourceId && path ? `vfs://${sourceId}${path}` : path;
 
-  const listSources = useCallback(async () => {
-    return await ctx.shell.listStorageSources();
-  }, [ctx]);
-
-  const handlePickerConfirm = (sid: string, sname: string, filePath: string) => {
-    setSourceId(sid);
-    setSourceName(sname);
-    setPath(filePath);
-    setShowPicker(false);
+  const handlePickFile = async () => {
+    const picked = await ctx.shell.pickFilePath({
+      title: t("pickImage"),
+      allowFileSelection: true,
+    });
+    if (picked) {
+      setPath(picked);
+    }
   };
 
   const handleAnalyze = async () => {
@@ -54,32 +51,25 @@ export function AnalyzePanel({ t, ctx }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-2">
-        <div className="flex flex-1 items-center gap-2 rounded border border-black/10 dark:border-white/10 bg-transparent px-3 py-2 text-sm">
-          {sourceId ? (
-            <span className="shrink-0 rounded bg-[var(--color-accent-subtle)] px-2 py-0.5 text-xs text-[var(--color-accent)]">
-              {sourceName || sourceId}
-            </span>
-          ) : null}
-          <input
-            type="text"
-            value={path}
-            onChange={(e) => {
-              setPath(e.target.value);
-              if (sourceId) {
-                setSourceId("");
-                setSourceName("");
-              }
-            }}
-            placeholder={sourceId ? t("pathPlaceholder") : t("pathOrPickPlaceholder")}
-            className="flex-1 bg-transparent outline-none min-w-0"
-            onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
-          />
-        </div>
+        <input
+          type="text"
+          value={path}
+          onChange={(e) => {
+            setPath(e.target.value);
+            if (sourceId) {
+              setSourceId("");
+              setSourceName("");
+            }
+          }}
+          placeholder={t("pathPlaceholder")}
+          className="flex-1 rounded border border-black/10 dark:border-white/10 bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--color-accent)]"
+          onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
+        />
         <button
           type="button"
-          onClick={() => setShowPicker(!showPicker)}
+          onClick={handlePickFile}
           className="cursor-pointer rounded border border-black/10 dark:border-white/10 px-3 py-2 text-sm hover:bg-black/[0.05] dark:hover:bg-white/[0.05]"
-          title={t("pickStorage")}
+          title={t("pickFile")}
         >
           <FolderOpen size={16} />
         </button>
@@ -109,18 +99,6 @@ export function AnalyzePanel({ t, ctx }: Props) {
           </button>
         ))}
       </div>
-
-      {showPicker && (
-        <div className="rounded border border-black/10 dark:border-white/10" style={{ height: 400 }}>
-          <VfsFilePicker
-            onConfirm={handlePickerConfirm}
-            onCancel={() => setShowPicker(false)}
-            listSources={listSources}
-            initialSourceId={sourceId}
-            initialPath={path || "/"}
-          />
-        </div>
-      )}
 
       {error && (
         <div className="rounded bg-red-500/10 px-3 py-2 text-sm text-red-500">{error}</div>
