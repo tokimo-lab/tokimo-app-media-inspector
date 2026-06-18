@@ -1,11 +1,11 @@
 import type { AppRuntimeCtx } from "@tokimo/sdk";
 import { useJobSubscription } from "@tokimo/sdk";
 import { FolderOpen } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
-  api,
-  type AnalyzeResponse,
   type AnalysisType,
+  type AnalyzeResponse,
+  api,
   type JobStatusResponse,
 } from "../api/client";
 import { JobProgress } from "./JobProgress";

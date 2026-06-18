@@ -1,4 +1,9 @@
-import type { ClipResult, FaceResult, GpsResult, OcrResult } from "../api/client";
+import type {
+  ClipResult,
+  FaceResult,
+  GpsResult,
+  OcrResult,
+} from "../api/client";
 
 interface AnalyzeResultData {
   path: string;
@@ -28,7 +33,9 @@ export function ResultViewer({ result, t }: Props) {
               {result.ocr.items.map((item, i) => (
                 <div key={i} className="flex items-start gap-2 text-xs">
                   <span className="shrink-0 rounded bg-black/[0.05] dark:bg-white/[0.05] px-1.5 py-0.5 font-mono">
-                    {item.score != null ? `${(item.score * 100).toFixed(0)}%` : "-"}
+                    {item.score != null
+                      ? `${(item.score * 100).toFixed(0)}%`
+                      : "-"}
                   </span>
                   <span className="break-all">{item.text}</span>
                 </div>
@@ -46,7 +53,10 @@ export function ResultViewer({ result, t }: Props) {
           ) : (
             <div className="flex flex-col gap-2">
               {result.face.faces.map((face, i) => (
-                <div key={i} className="rounded bg-black/[0.03] dark:bg-white/[0.03] p-2 text-xs">
+                <div
+                  key={i}
+                  className="rounded bg-black/[0.03] dark:bg-white/[0.03] p-2 text-xs"
+                >
                   <div>
                     {t("confidence")}: {(face.confidence * 100).toFixed(1)}%
                   </div>
@@ -70,7 +80,12 @@ export function ResultViewer({ result, t }: Props) {
             {t("dimensions")}: {result.clip.embedding.length}
           </div>
           <div className="mt-1 font-mono text-[10px] opacity-60">
-            [{result.clip.embedding.slice(0, 8).map((v) => v.toFixed(4)).join(", ")}...]
+            [
+            {result.clip.embedding
+              .slice(0, 8)
+              .map((v) => v.toFixed(4))
+              .join(", ")}
+            ...]
           </div>
         </section>
       )}
@@ -80,7 +95,8 @@ export function ResultViewer({ result, t }: Props) {
           <h3 className="mb-2 text-sm font-semibold">{t("gps")}</h3>
           <div className="flex flex-col gap-1 text-xs">
             <div>
-              {t("coordinates")}: {result.gps.latitude.toFixed(6)}, {result.gps.longitude.toFixed(6)}
+              {t("coordinates")}: {result.gps.latitude.toFixed(6)},{" "}
+              {result.gps.longitude.toFixed(6)}
             </div>
             {result.gps.province && (
               <div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, type AiSettings, type GeoSettings } from "../api/client";
+import { type AiSettings, api, type GeoSettings } from "../api/client";
 
 interface Props {
   t: (key: string) => string;
@@ -74,7 +74,9 @@ export function SettingsPanel({ t }: Props) {
             <input
               type="password"
               value={geo.amapApiKey ?? ""}
-              onChange={(e) => setGeo({ ...geo, amapApiKey: e.target.value || null })}
+              onChange={(e) =>
+                setGeo({ ...geo, amapApiKey: e.target.value || null })
+              }
               className="rounded border border-black/10 dark:border-white/10 bg-transparent px-2 py-1.5 text-xs"
             />
           </label>
