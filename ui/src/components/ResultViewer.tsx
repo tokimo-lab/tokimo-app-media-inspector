@@ -30,8 +30,8 @@ export function ResultViewer({ result, t }: Props) {
             <div className="text-xs opacity-50">{t("noResult")}</div>
           ) : (
             <div className="flex flex-col gap-1">
-              {result.ocr.items.map((item, i) => (
-                <div key={`${item.text}-${i}`} className="flex items-start gap-2 text-xs">
+              {result.ocr.items.map((item) => (
+                <div key={item.text} className="flex items-start gap-2 text-xs">
                   <span className="shrink-0 rounded bg-black/[0.05] dark:bg-white/[0.05] px-1.5 py-0.5 font-mono">
                     {item.score != null
                       ? `${(item.score * 100).toFixed(0)}%`
@@ -52,9 +52,9 @@ export function ResultViewer({ result, t }: Props) {
             <div className="text-xs opacity-50">{t("noResult")}</div>
           ) : (
             <div className="flex flex-col gap-2">
-              {result.face.faces.map((face, i) => (
+              {result.face.faces.map((face) => (
                 <div
-                  key={`${face.x}-${face.y}-${i}`}
+                  key={`${face.x}-${face.y}`}
                   className="rounded bg-black/[0.03] dark:bg-white/[0.03] p-2 text-xs"
                 >
                   <div>
