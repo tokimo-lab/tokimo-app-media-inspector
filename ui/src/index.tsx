@@ -27,12 +27,12 @@ function ImageCortexWindow({ ctx }: { ctx: AppRuntimeCtx }) {
   const [tab, setTab] = useState<Tab>("analyze");
 
   return (
-    <div className="flex h-full w-full flex-col text-[var(--color-fg-primary)]">
-      <header className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 px-4 py-3">
-        <Brain size={20} style={{ color: "var(--color-accent)" }} />
+    <div className="flex h-full w-full flex-col bg-surface-base text-fg-primary">
+      <header className="flex items-center gap-3 border-b border-base px-4 py-3">
+        <Brain size={20} className="text-accent-text" />
         <div className="flex flex-col">
           <span className="text-sm font-semibold">{t("title")}</span>
-          <span className="text-[10px] opacity-60">{t("subtitle")}</span>
+          <span className="text-xs text-fg-secondary">{t("subtitle")}</span>
         </div>
         <nav className="ml-auto flex gap-1">
           {(["analyze", "health", "settings"] as const).map((id) => (
@@ -42,8 +42,8 @@ function ImageCortexWindow({ ctx }: { ctx: AppRuntimeCtx }) {
               onClick={() => setTab(id)}
               className={`cursor-pointer rounded px-3 py-1.5 text-xs transition ${
                 tab === id
-                  ? "bg-[var(--color-accent-subtle)] text-[var(--color-accent)]"
-                  : "hover:bg-black/[0.05] dark:hover:bg-white/[0.05]"
+                  ? "bg-accent-subtle text-accent-text"
+                  : "text-fg-secondary hover:bg-fill-secondary hover:text-fg-primary"
               }`}
             >
               {t(id)}

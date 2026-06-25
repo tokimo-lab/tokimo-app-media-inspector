@@ -36,6 +36,13 @@ export const zhCN: Record<string, string> = {
   pathOrPickPlaceholder: "输入路径或点击右侧按钮选择存储源",
   jobSubmitted: "任务已提交",
   analysisStatus: "分析状态",
+  setupTitle: "Image Cortex 准备就绪",
+  setupDescription:
+    "这里是图片感知能力的调试入口，可直接选择一张图片验证 OCR、人脸、向量和 GPS 分析。",
+  setupFeatureOcr: "识别图片里的文字内容",
+  setupFeatureFace: "检测人脸位置并产出基础特征",
+  setupFeatureEmbedding: "生成图片向量与地理信息分析结果",
+  setupAction: "选择图片试一试",
 };
 
 export const enUS: Record<string, string> = {
@@ -76,4 +83,11 @@ export const enUS: Record<string, string> = {
   pathOrPickPlaceholder: "Enter path or click button to pick storage source",
   jobSubmitted: "Job submitted",
   analysisStatus: "Analysis status",
+  setupTitle: "Image Cortex is ready",
+  setupDescription:
+    "Use this diagnostic entry to try OCR, face detection, embeddings, and GPS analysis on an image.",
+  setupFeatureOcr: "Read text content from images",
+  setupFeatureFace: "Detect faces and produce base features",
+  setupFeatureEmbedding: "Generate embeddings and location analysis results",
+  setupAction: "Pick an image to try",
 };

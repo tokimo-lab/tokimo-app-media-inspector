@@ -1,6 +1,7 @@
 import type { AppRuntimeCtx } from "@tokimo/sdk";
 import { useJobSubscription } from "@tokimo/sdk";
-import { FolderOpen } from "lucide-react";
+import { AppSetupGuide, type AppSetupGuideProps } from "@tokimo/ui";
+import { Brain, FolderOpen, ScanFace, Search, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   type AnalysisType,
@@ -10,6 +11,10 @@ import {
 } from "../api/client";
 import { JobProgress } from "./JobProgress";
 import { ResultViewer } from "./ResultViewer";
+
+type GuideIcon = AppSetupGuideProps["features"][number]["icon"];
+
+const guideIcon = (icon: typeof Brain) => icon as unknown as GuideIcon;
 
 interface Props {
   t: (key: string) => string;
@@ -99,6 +104,27 @@ export function AnalyzePanel({ t, ctx }: Props) {
     jobResult?.status === "completed" && jobResult.data
       ? (jobResult.data as AnalyzeResponse)
       : null;
+  const isInitialEmpty = !sourceId && !path && !jobId && !jobResult && !error;
+
+  if (isInitialEmpty) {
+    return (
+      <AppSetupGuide
+        imageSrc="/api/apps/image-cortex/assets/icon.png"
+        accentColor="indigo"
+        title={t("setupTitle")}
+        description={t("setupDescription")}
+        features={[
+          { icon: guideIcon(Search), label: t("setupFeatureOcr") },
+          { icon: guideIcon(ScanFace), label: t("setupFeatureFace") },
+          { icon: guideIcon(Brain), label: t("setupFeatureEmbedding") },
+        ]}
+        actionLabel={t("setupAction")}
+        actionIcon={guideIcon(Sparkles)}
+        onAction={handlePickFile}
+        className="-m-4 h-[calc(100%+2rem)]"
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
