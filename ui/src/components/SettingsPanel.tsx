@@ -146,7 +146,7 @@ export function SettingsPanel({ t, onOpenAiModels }: Props) {
         </div>
       </div>
 
-      <div className={`w-full max-w-3xl space-y-6 ${dirty ? "pb-20" : ""}`}>
+      <div className={`w-full space-y-6 ${dirty ? "pb-20" : ""}`}>
         {geo && (
           <SettingGroup
             title={t("geoSettings")}
