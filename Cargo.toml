@@ -16,10 +16,10 @@ name = "tokimo-app-image-cortex"
 path = "src/main.rs"
 
 [dependencies]
-tokimo-bus-client   = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "80063cb4391c5249df9cd3b570b1eabed64c3843" }
-tokimo-bus-protocol = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "80063cb4391c5249df9cd3b570b1eabed64c3843", features = ["axum"] }
-tokimo-bus-auth     = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "80063cb4391c5249df9cd3b570b1eabed64c3843", features = ["axum", "cli-db"] }
-tokimo-bus-cli      = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "80063cb4391c5249df9cd3b570b1eabed64c3843" }
+tokimo-bus-client   = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "5322dc286809a5bb79953b512334b0a8a63e33f2" }
+tokimo-bus-protocol = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "5322dc286809a5bb79953b512334b0a8a63e33f2", features = ["axum"] }
+tokimo-bus-auth     = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "5322dc286809a5bb79953b512334b0a8a63e33f2", features = ["axum", "cli-db"] }
+tokimo-bus-cli      = { git = "https://github.com/tokimo-lab/tokimo-bus.git", rev = "5322dc286809a5bb79953b512334b0a8a63e33f2" }
 
 clap              = { version = "4", features = ["derive", "env"] }
 tokio              = { version = "1", features = ["rt-multi-thread", "macros", "time", "signal"] }
@@ -36,13 +36,13 @@ anyhow             = "1"
 axum = { version = "0.8", features = ["json"] }
 ts-rs = { version = "12", features = ["serde-json-impl"] }
 
-# ── Workspace-local packages ──
-tokimo-perception        = { path = "../../packages/tokimo-perception" }
-tokimo-package-image     = { path = "../../packages/tokimo-package-image" }
-tokimo-package-ffmpeg    = { path = "../../packages/tokimo-package-ffmpeg" }
-tokimo-package-client-api = { path = "../../packages/tokimo-package-client-api" }
+# ── Tokimo packages ──
+tokimo-perception         = { git = "https://github.com/tokimo-lab/tokimo-perception.git", rev = "ae6d35c" }
+tokimo-package-image      = { git = "https://github.com/tokimo-lab/tokimo-package-image.git", rev = "6def2c0" }
+tokimo-package-ffmpeg     = { git = "https://github.com/tokimo-lab/tokimo-package-ffmpeg.git", rev = "b3bb5c8c" }
+tokimo-package-client-api = { git = "https://github.com/tokimo-lab/tokimo-package-client-api.git", rev = "07283bb0" }
 
 # ── External crates ──
-reqwest      = { workspace = true, features = ["stream"] }
+reqwest      = { version = "0.13", default-features = false, features = ["json", "rustls", "stream"] }
 kamadak-exif = "0.6"
 urlencoding  = "2"
