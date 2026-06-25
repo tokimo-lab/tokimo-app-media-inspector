@@ -17,12 +17,12 @@ pub async fn load_image_bytes(http: &reqwest::Client, path: &str) -> Result<Vec<
 }
 
 fn parse_vfs_path(vfs_path: &str) -> Result<(&str, &str), AppError> {
-    let stripped = vfs_path.strip_prefix("vfs://").ok_or_else(|| {
-        AppError::BadRequest(format!("invalid VFS path: {vfs_path}"))
-    })?;
-    let slash_idx = stripped.find('/').ok_or_else(|| {
-        AppError::BadRequest(format!("VFS path missing sub-path: {vfs_path}"))
-    })?;
+    let stripped = vfs_path
+        .strip_prefix("vfs://")
+        .ok_or_else(|| AppError::BadRequest(format!("invalid VFS path: {vfs_path}")))?;
+    let slash_idx = stripped
+        .find('/')
+        .ok_or_else(|| AppError::BadRequest(format!("VFS path missing sub-path: {vfs_path}")))?;
     let source_id = &stripped[..slash_idx];
     let sub_path = &stripped[slash_idx..];
     if source_id.is_empty() {
@@ -48,9 +48,7 @@ async fn load_vfs_bytes(http: &reqwest::Client, vfs_path: &str) -> Result<Vec<u8
     if !resp.status().is_success() {
         let status = resp.status();
         let body = resp.text().await.unwrap_or_default();
-        return Err(AppError::Internal(format!(
-            "VFS read failed ({status}): {body}"
-        )));
+        return Err(AppError::Internal(format!("VFS read failed ({status}): {body}")));
     }
 
     let bytes = resp

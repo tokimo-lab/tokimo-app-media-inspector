@@ -66,9 +66,8 @@ async fn main() -> anyhow::Result<()> {
         None if std::env::var_os("TOKIMO_BUS_SOCKET").is_some() => {
             tracing_subscriber::fmt()
                 .with_env_filter(
-                    tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                        "info,tokimo_bus_client=info,tokimo_app_image_cortex=debug".into()
-                    }),
+                    tracing_subscriber::EnvFilter::try_from_default_env()
+                        .unwrap_or_else(|_| "info,tokimo_bus_client=info,tokimo_app_image_cortex=debug".into()),
                 )
                 .init();
             if let Err(error) = run_server().await {
@@ -134,10 +133,7 @@ async fn run_server() -> anyhow::Result<()> {
 
     let builder = bus_services::image_cortex_jobs::register(builder, Arc::clone(&ctx));
 
-    let client = builder
-        .build()
-        .await
-        .map_err(|e| anyhow::anyhow!("bus build: {e}"))?;
+    let client = builder.build().await.map_err(|e| anyhow::anyhow!("bus build: {e}"))?;
 
     client_slot
         .set(Arc::clone(&client))
@@ -145,12 +141,7 @@ async fn run_server() -> anyhow::Result<()> {
 
     info!("image-cortex: registered with broker");
 
-    bus_clients::jobs::register_handler(
-        &client,
-        "image_cortex_process",
-        "dispatch_image_cortex_process",
-    )
-    .await?;
+    bus_clients::jobs::register_handler(&client, "image_cortex_process", "dispatch_image_cortex_process").await?;
 
     info!("image-cortex: job handler registered");
 
