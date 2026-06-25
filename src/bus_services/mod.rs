@@ -1,1 +1,1 @@
-pub mod image_cortex_jobs;
+pub mod media_inspector_jobs;

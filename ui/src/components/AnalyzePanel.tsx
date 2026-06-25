@@ -102,7 +102,7 @@ export function AnalyzePanel({ t, ctx }: Props) {
   if (isInitialEmpty) {
     return (
       <AppSetupGuide
-        imageSrc="/api/apps/image-cortex/assets/icon.png"
+        imageSrc="/api/apps/media-inspector/assets/icon.png"
         accentColor="indigo"
         title={t("setupTitle")}
         description={t("setupDescription")}

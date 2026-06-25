@@ -71,13 +71,13 @@ function ImageCortexWindow({ ctx }: { ctx: AppRuntimeCtx }) {
 }
 
 export default defineApp({
-  id: "image-cortex",
+  id: "media-inspector",
   manifest: {
-    id: "image-cortex",
+    id: "media-inspector",
     appName: "Media Inspector",
     icon: "Brain",
     color: "#6366f1",
-    windowType: "image-cortex",
+    windowType: "media-inspector",
     defaultSize: { width: 900, height: 700 },
     category: "app",
   },

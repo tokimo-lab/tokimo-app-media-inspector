@@ -19,8 +19,8 @@ pub async fn run_analyze(path: String, analysis_type: String) -> anyhow::Result<
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| std::path::PathBuf::from("./.data/local"));
 
-    let ai_worker = tokimo_perception::worker::client::AiWorkerClient::from_settings(
-        &tokimo_perception::worker::client::AiWorkerSettings::default(),
+    let ai_worker = tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerClient::from_settings(
+        &tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerSettings::default(),
         &data_local,
     );
 
@@ -130,7 +130,7 @@ pub async fn run_analyze(path: String, analysis_type: String) -> anyhow::Result<
 }
 
 pub async fn run_health() -> anyhow::Result<()> {
-    println!("Image Cortex CLI — health check");
-    println!("Use 'bun dev --apps=image-cortex' to run the full server.");
+    println!("Media Inspector CLI — health check");
+    println!("Use 'bun dev --apps=media-inspector' to run the full server.");
     Ok(())
 }

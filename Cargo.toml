@@ -1,18 +1,18 @@
 [package]
-name        = "tokimo-app-image-cortex"
+name        = "tokimo-app-media-inspector"
 version     = "0.1.0"
 edition     = "2024"
 rust-version = "1.94.0"
 license     = "MIT OR Apache-2.0"
 description = "图片分析中间件 — OCR / 人脸 / CLIP / GPS 逆地理编码"
-repository  = "https://github.com/tokimo-lab/tokimo-app-image-cortex"
+repository  = "https://github.com/tokimo-lab/tokimo-app-media-inspector"
 
 [lib]
-name = "tokimo_app_image_cortex"
+name = "tokimo_app_media_inspector"
 path = "src/lib.rs"
 
 [[bin]]
-name = "tokimo-app-image-cortex"
+name = "tokimo-app-media-inspector"
 path = "src/main.rs"
 
 [dependencies]
@@ -37,7 +37,7 @@ axum = { version = "0.8", features = ["json"] }
 ts-rs = { version = "12", features = ["serde-json-impl"] }
 
 # ── Tokimo packages ──
-tokimo-perception         = { git = "https://github.com/tokimo-lab/tokimo-perception.git", rev = "ae6d35c" }
+tokimo-media-intelligence         = { git = "https://github.com/tokimo-lab/tokimo-media-intelligence.git", rev = "cb22558" }
 tokimo-package-image      = { git = "https://github.com/tokimo-lab/tokimo-package-image.git", rev = "6def2c0" }
 tokimo-package-ffmpeg     = { git = "https://github.com/tokimo-lab/tokimo-package-ffmpeg.git", rev = "b3bb5c8c" }
 tokimo-package-client-api = { git = "https://github.com/tokimo-lab/tokimo-package-client-api.git", rev = "07283bb0" }

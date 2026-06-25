@@ -1,5 +1,5 @@
 use serde::Serialize;
-use tokimo_perception::worker::client::AiWorkerClient;
+use tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerClient;
 use ts_rs::TS;
 
 use crate::config::AiSettings;
@@ -14,7 +14,7 @@ pub struct ClipResult {
 }
 
 pub async fn analyze(
-    ai: &AiWorkerClient,
+    ai: &MediaIntelligenceWorkerClient,
     image_bytes: Vec<u8>,
     _settings: &AiSettings,
     request_id: Option<String>,

@@ -11,13 +11,13 @@ use crate::{assets, handlers, state::AppState};
 
 pub async fn spawn(service: &str, ctx: Arc<AppState>) -> anyhow::Result<DataPlaneSocket> {
     let (listener, socket) = BusListener::bind_for_app(service)?;
-    info!(?socket, "image-cortex: app server listening");
+    info!(?socket, "media-inspector: app server listening");
 
     let router = build_router(ctx);
 
     tokio::spawn(async move {
         if let Err(e) = axum::serve(listener, router).await {
-            error!(error = %e, "image-cortex: app server stopped");
+            error!(error = %e, "media-inspector: app server stopped");
         }
     });
 

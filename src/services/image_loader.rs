@@ -118,7 +118,7 @@ async fn convert_to_jpeg(bytes: Vec<u8>, filename: &str) -> Result<Vec<u8>, AppE
         .map_err(|e| AppError::Internal(format!("FFI decode failed for {filename}: {e}")))?;
 
     tracing::info!(
-        "[image-cortex] Converted {filename} ({} KB) → JPEG ({} KB) via FFI",
+        "[media-inspector] Converted {filename} ({} KB) → JPEG ({} KB) via FFI",
         input_len / 1024,
         result.len() / 1024
     );

@@ -2,11 +2,11 @@ use std::sync::{Arc, OnceLock};
 
 use sea_orm::DatabaseConnection;
 use tokimo_bus_client::BusClient;
-use tokimo_perception::worker::client::AiWorkerClient;
+use tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerClient;
 
 pub struct AppState {
     pub db: DatabaseConnection,
-    pub ai_worker: Arc<AiWorkerClient>,
+    pub ai_worker: Arc<MediaIntelligenceWorkerClient>,
     pub http_client: reqwest::Client,
     pub bus_client: Arc<OnceLock<Arc<BusClient>>>,
 }

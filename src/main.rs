@@ -4,7 +4,7 @@ use std::sync::{Arc, OnceLock};
 use clap::Parser;
 use tokimo_bus_cli::TokimoAuthArgs;
 use tokimo_bus_client::{BusClient, ClientConfig};
-use tokimo_perception::worker::client::AiWorkerClient;
+use tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerClient;
 use tracing::{error, info};
 
 mod app_server;
@@ -32,9 +32,9 @@ fn data_local_path() -> PathBuf {
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "tokimo-app-image-cortex",
-    about = "Image Cortex — 图片分析中间件 (OCR / 人脸 / CLIP / GPS)",
-    long_about = "Image Cortex CLI — analyze images with OCR, face detection, CLIP embedding, and GPS reverse geocoding.",
+    name = "tokimo-app-media-inspector",
+    about = "Media Inspector — 图片分析中间件 (OCR / 人脸 / CLIP / GPS)",
+    long_about = "Media Inspector CLI — analyze images with OCR, face detection, CLIP embedding, and GPS reverse geocoding.",
     term_width = 100
 )]
 struct Cli {
@@ -67,11 +67,11 @@ async fn main() -> anyhow::Result<()> {
             tracing_subscriber::fmt()
                 .with_env_filter(
                     tracing_subscriber::EnvFilter::try_from_default_env()
-                        .unwrap_or_else(|_| "info,tokimo_bus_client=info,tokimo_app_image_cortex=debug".into()),
+                        .unwrap_or_else(|_| "info,tokimo_bus_client=info,tokimo_app_media_inspector=debug".into()),
                 )
                 .init();
             if let Err(error) = run_server().await {
-                error!(%error, "image-cortex: fatal");
+                error!(%error, "media-inspector: fatal");
                 std::process::exit(1);
             }
         }
@@ -96,14 +96,14 @@ async fn main() -> anyhow::Result<()> {
 
 async fn run_server() -> anyhow::Result<()> {
     let cfg = ClientConfig::from_env().map_err(|e| anyhow::anyhow!("ClientConfig: {e}"))?;
-    info!(endpoint = ?cfg.endpoint, "image-cortex: connecting to broker");
+    info!(endpoint = ?cfg.endpoint, "media-inspector: connecting to broker");
 
     let db = db::init_pool().await?;
-    info!("image-cortex: db connected (schema managed by host)");
+    info!("media-inspector: db connected (schema managed by host)");
 
-    let ai_worker = AiWorkerClient::from_settings(
-        &tokimo_perception::worker::client::AiWorkerSettings {
-            mode: tokimo_perception::worker::client::AiWorkerMode::Auto,
+    let ai_worker = MediaIntelligenceWorkerClient::from_settings(
+        &tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerSettings {
+            mode: tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerMode::Auto,
             remote_url: None,
             keepalive_always: false,
             idle_timeout_secs: None,
@@ -123,15 +123,15 @@ async fn run_server() -> anyhow::Result<()> {
         bus_client: Arc::clone(&client_slot),
     });
 
-    let app_socket = app_server::spawn("image-cortex", Arc::clone(&ctx))
+    let app_socket = app_server::spawn("media-inspector", Arc::clone(&ctx))
         .await
         .map_err(|e| anyhow::anyhow!("app_server spawn: {e}"))?;
 
     let builder = BusClient::builder(cfg)
-        .service("image-cortex", env!("CARGO_PKG_VERSION"))
+        .service("media-inspector", env!("CARGO_PKG_VERSION"))
         .data_plane(app_socket);
 
-    let builder = bus_services::image_cortex_jobs::register(builder, Arc::clone(&ctx));
+    let builder = bus_services::media_inspector_jobs::register(builder, Arc::clone(&ctx));
 
     let client = builder.build().await.map_err(|e| anyhow::anyhow!("bus build: {e}"))?;
 
@@ -139,11 +139,11 @@ async fn run_server() -> anyhow::Result<()> {
         .set(Arc::clone(&client))
         .map_err(|_| anyhow::anyhow!("client_slot already set"))?;
 
-    info!("image-cortex: registered with broker");
+    info!("media-inspector: registered with broker");
 
-    bus_clients::jobs::register_handler(&client, "image_cortex_process", "dispatch_image_cortex_process").await?;
+    bus_clients::jobs::register_handler(&client, "media_inspector_process", "dispatch_media_inspector_process").await?;
 
-    info!("image-cortex: job handler registered");
+    info!("media-inspector: job handler registered");
 
     let shutdown = {
         let client = Arc::clone(&client);
@@ -152,10 +152,10 @@ async fn run_server() -> anyhow::Result<()> {
 
     tokio::select! {
         _ = tokio::signal::ctrl_c() => {
-            info!("image-cortex: SIGINT received");
+            info!("media-inspector: SIGINT received");
             client.shutdown();
         }
-        _ = shutdown => info!("image-cortex: broker sent Shutdown"),
+        _ = shutdown => info!("media-inspector: broker sent Shutdown"),
     }
 
     Ok(())

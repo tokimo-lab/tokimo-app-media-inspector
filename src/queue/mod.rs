@@ -1,1 +1,1 @@
-pub mod image_cortex_process;
+pub mod media_inspector_process;

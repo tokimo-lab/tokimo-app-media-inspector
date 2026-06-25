@@ -1,4 +1,4 @@
-# tokimo-app-image-cortex
+# tokimo-app-media-inspector
 
 图片分析中间件 — OCR / 人脸 / CLIP / GPS 逆地理编码
 
@@ -15,15 +15,15 @@
 
 ```bash
 # 分析图片
-curl -X POST http://localhost:5678/api/apps/image-cortex/analyze \
+curl -X POST http://localhost:5678/api/apps/media-inspector/analyze \
   -H "Content-Type: application/json" \
   -d '{"path": "/path/to/image.jpg", "analysisType": "all"}'
 
 # 健康检查
-curl http://localhost:5678/api/apps/image-cortex/health
+curl http://localhost:5678/api/apps/media-inspector/health
 
 # 能力查询
-curl http://localhost:5678/api/apps/image-cortex/capabilities
+curl http://localhost:5678/api/apps/media-inspector/capabilities
 ```
 
 ### Bus 调用（其他 App）
@@ -33,21 +33,21 @@ let payload = serde_json::to_vec(&serde_json::json!({
     "path": "/data/photos/IMG_001.jpg",
     "analysisType": "ocr"
 }))?;
-let result = bus_client.invoke("image-cortex", "analyze", payload, caller).await?;
+let result = bus_client.invoke("media-inspector", "analyze", payload, caller).await?;
 ```
 
 ### CLI
 
 ```bash
 # 分析图片
-tokimo-app-image-cortex analyze /path/to/image.jpg --type ocr
+tokimo-app-media-inspector analyze /path/to/image.jpg --type ocr
 
 # 健康检查
-tokimo-app-image-cortex health
+tokimo-app-media-inspector health
 ```
 
 ## 开发
 
 ```bash
-bun dev --apps=image-cortex
+bun dev --apps=media-inspector
 ```

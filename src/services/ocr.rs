@@ -1,5 +1,5 @@
 use serde::Serialize;
-use tokimo_perception::worker::client::AiWorkerClient;
+use tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerClient;
 use ts_rs::TS;
 
 use crate::config::AiSettings;
@@ -32,7 +32,7 @@ pub struct OcrItem {
 }
 
 pub async fn analyze(
-    ai: &AiWorkerClient,
+    ai: &MediaIntelligenceWorkerClient,
     image_bytes: Vec<u8>,
     settings: &AiSettings,
     request_id: Option<String>,
@@ -41,7 +41,7 @@ pub async fn analyze(
         return Err(AppError::Internal("OCR model files not found".into()));
     }
 
-    use tokimo_perception::worker::protocol::types as wire;
+    use tokimo_media_intelligence::worker::protocol::types as wire;
     let model = settings.ocr_model_name.as_str();
     let needs_hybrid = !wire::ocr_model_supports_blocks(model);
     let items = if needs_hybrid {

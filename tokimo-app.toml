@@ -1,17 +1,17 @@
 [app]
-id          = "image-cortex"
-display     = "Image Cortex"
+id          = "media-inspector"
+display     = "Media Inspector"
 version     = "0.1.0"
 description = "图片分析中间件 — OCR / 人脸 / CLIP / GPS 逆地理编码"
 
 [runtime]
 lifecycle    = "resident"
-binary       = "tokimo-app-image-cortex"
+binary       = "tokimo-app-media-inspector"
 ui_dist      = "ui/dist"
 
 [ui]
 entry        = "assets/index.js"
-window_type  = "image-cortex"
+window_type  = "media-inspector"
 category     = "app"
 icon         = "Brain"
 color        = "#6366f1"
@@ -19,6 +19,6 @@ width        = 900
 height       = 700
 
 [database]
-schema         = "image_cortex"
+schema         = "media_inspector"
 migrations_dir = "migrations"
 driver         = "postgres"

@@ -100,7 +100,7 @@ export interface AiSettings {
   ocrAuxModelName: string | null;
 }
 
-const BASE = "/api/apps/image-cortex";
+const BASE = "/api/apps/media-inspector";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, options);

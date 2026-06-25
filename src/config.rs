@@ -16,7 +16,7 @@ pub struct GeoSettings {
 }
 
 impl SystemConfigSection for GeoSettings {
-    const SCOPE: &'static str = "image_cortex";
+    const SCOPE: &'static str = "media_inspector";
     const SCOPE_ID: &'static str = "geo";
     fn default_value() -> Self {
         Self {
@@ -46,7 +46,7 @@ fn default_ocr_model() -> String {
 }
 
 impl SystemConfigSection for AiSettings {
-    const SCOPE: &'static str = "image_cortex";
+    const SCOPE: &'static str = "media_inspector";
     const SCOPE_ID: &'static str = "ai";
     fn default_value() -> Self {
         Self {

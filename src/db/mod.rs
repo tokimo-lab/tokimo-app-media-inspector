@@ -10,7 +10,7 @@ pub async fn init_pool() -> anyhow::Result<DatabaseConnection> {
 
     let sep = if base_url.contains('?') { '&' } else { '?' };
     let url = format!(
-        "{base_url}{sep}application_name=tokimo-app-image-cortex\
+        "{base_url}{sep}application_name=tokimo-app-media-inspector\
          &options=-c%20search_path%3D%22{schema}%22%2Cpublic"
     );
 
