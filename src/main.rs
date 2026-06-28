@@ -103,6 +103,8 @@ async fn run_server() -> anyhow::Result<()> {
 
     let ai_worker = MediaIntelligenceWorkerClient::from_settings(
         &tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerSettings {
+            hardware_acceleration_enabled: true,
+            acceleration_profile: tokimo_media_intelligence::worker::client::AccelerationProfile::Balanced,
             mode: tokimo_media_intelligence::worker::client::MediaIntelligenceWorkerMode::Auto,
             remote_url: None,
             keepalive_always: false,
