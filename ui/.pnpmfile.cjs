@@ -1,12 +1,24 @@
-// Tokimo monorepo dev-mode override.
+// Tokimo standalone app dependency policy.
+// Default mode keeps package.json Git revisions so committed pnpm-lock.yaml is
+// portable outside the monorepo. Set TOKIMO_LINK_LOCAL_PACKAGES=1 only for
+// local package development; never commit a lock generated in that mode.
 const fs = require("node:fs");
 const path = require("node:path");
+
+const LOCAL_PACKAGE_PATHS = {
+  "@tokimo/app-builder": "packages/tokimo-app-builder",
+  "@tokimo/sdk": "packages/tokimo-package-sdk",
+  "@tokimo/terminal": "packages/tokimo-package-terminal",
+  "@tokimo/ui": "packages/ui",
+  "@tokimo/viewers": "packages/tokimo-viewers",
+};
 
 function findMonorepoRoot(start) {
   let dir = start;
   while (dir !== path.dirname(dir)) {
     if (
-      fs.existsSync(path.join(dir, "packages/tokimo-app-builder/package.json"))
+      fs.existsSync(path.join(dir, "feeds.toml")) &&
+      fs.existsSync(path.join(dir, "packages"))
     ) {
       return dir;
     }
@@ -15,46 +27,64 @@ function findMonorepoRoot(start) {
   return null;
 }
 
-const root = findMonorepoRoot(__dirname);
-
 function rel(target) {
   return path.relative(__dirname, target).split(path.sep).join("/");
 }
 
-const fileOverrides = root
-  ? {
-      "@tokimo/ui": `link:${rel(path.join(root, "packages/ui"))}`,
-      "@tokimo/sdk": `link:${rel(path.join(root, "packages/tokimo-package-sdk"))}`,
-      "@tokimo/app-builder": `link:${rel(path.join(root, "packages/tokimo-app-builder"))}`,
+function collectDirectTokimoSpecs() {
+  const pkg = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "package.json"), "utf8"),
+  );
+  const refs = {};
+  for (const sectionName of [
+    "dependencies",
+    "devDependencies",
+    "peerDependencies",
+  ]) {
+    const section = pkg[sectionName];
+    if (!section) continue;
+    for (const [name, spec] of Object.entries(section)) {
+      if (name.startsWith("@tokimo/") && typeof spec === "string") {
+        refs[name] = spec;
+      }
     }
-  : null;
+  }
+  return refs;
+}
 
-const githubRefs = {
-  "@tokimo/ui":
-    "github:tokimo-lab/tokimo-ui#67925b8147d21f7d5ac3db50a3601400b144b89d",
-  "@tokimo/sdk":
-    "github:tokimo-lab/tokimo-package-sdk#2632b1b675b012735d54f85fee00b71b7f27e0c4",
-  "@tokimo/app-builder":
-    "github:tokimo-lab/tokimo-app-builder#2232b1ba4fb9b7d61645c6588c579106bf6821dd",
-};
+const directTokimoSpecs = collectDirectTokimoSpecs();
+const root =
+  process.env.TOKIMO_LINK_LOCAL_PACKAGES === "1"
+    ? findMonorepoRoot(__dirname)
+    : null;
 
-if (fileOverrides) {
+const localOverrides = {};
+if (root) {
+  for (const [name, packagePath] of Object.entries(LOCAL_PACKAGE_PATHS)) {
+    if (!Object.hasOwn(directTokimoSpecs, name)) continue;
+    const target = path.join(root, packagePath);
+    if (fs.existsSync(path.join(target, "package.json"))) {
+      localOverrides[name] = `link:${rel(target)}`;
+    }
+  }
+}
+
+if (root && Object.keys(localOverrides).length > 0) {
   console.log(
-    `[tokimo .pnpmfile.cjs] monorepo detected at ${root}; overriding @tokimo/* to file: paths`,
+    `[tokimo .pnpmfile.cjs] TOKIMO_LINK_LOCAL_PACKAGES=1; overriding @tokimo/* to local links`,
   );
 }
 
 function rewriteSection(section) {
   if (!section) return;
   for (const [name, spec] of Object.entries(section)) {
-    if (fileOverrides && Object.hasOwn(fileOverrides, name)) {
-      section[name] = fileOverrides[name];
+    if (Object.hasOwn(localOverrides, name)) {
+      section[name] = localOverrides[name];
     } else if (
-      !fileOverrides &&
       spec === "workspace:*" &&
-      Object.hasOwn(githubRefs, name)
+      Object.hasOwn(directTokimoSpecs, name)
     ) {
-      section[name] = githubRefs[name];
+      section[name] = directTokimoSpecs[name];
     }
   }
 }
