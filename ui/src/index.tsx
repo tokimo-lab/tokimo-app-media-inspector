@@ -82,6 +82,11 @@ export default defineApp({
     category: "app",
   },
   translations: { "zh-CN": zhCN, "en-US": enUS },
+  standalone: {
+    createWindow: (route) => ({ type: "media-inspector", route }),
+    getRoute: (window) =>
+      window.type === "media-inspector" ? (window.route ?? "/") : null,
+  },
   mount(container, ctx): Dispose {
     const root = createRoot(container);
     const locale = ctx.locale.startsWith("zh") ? uiZhCN : uiEnUS;
