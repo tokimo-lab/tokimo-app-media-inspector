@@ -34,7 +34,7 @@ function ImageCortexWindow({ ctx }: { ctx: AppRuntimeCtx }) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-surface-base text-fg-primary">
+    <div className="app-safe-area flex h-full w-full flex-col bg-surface-base text-fg-primary">
       <header className="flex items-center gap-3 border-b border-base px-4 py-3">
         <Brain size={20} className="text-accent-text" />
         <div className="flex flex-col">
